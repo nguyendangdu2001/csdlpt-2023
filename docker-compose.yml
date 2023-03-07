@@ -1,0 +1,50 @@
+version: "2"
+services:
+  rs01:
+    image: mongo
+    container_name: rs01
+    # command: mongod --port 27017 --shardsvr --replSet rs-shard-01
+    command: mongod --config /var/configs/rs01.conf
+    volumes:
+      - ./scripts:/scripts
+      - ./configs:/var/configs
+      - ./data01:/data
+    ports:
+      - 27018:27018
+    networks:
+      - my_network
+
+  rs02:
+    image: mongo
+    container_name: rs02
+    # command: mongod --port 27017 --shardsvr --replSet rs-shard-01
+    command: mongod --config /var/configs/rs02.conf
+    volumes:
+      - ./scripts:/scripts
+      - ./configs:/var/configs
+      - ./data02:/data
+    ports:
+      - 27019:27019
+    networks:
+      - my_network
+
+  rs00:
+    image: mongo
+    container_name: rs00
+    # command: mongod --port 27017 --shardsvr --replSet rs-shard-01
+    command: mongod --config /var/configs/rs00.conf
+    volumes:
+      - ./scripts:/scripts
+      - ./configs:/var/configs
+      - ./data00:/data
+    ports:
+      - 27017:27017
+    networks:
+      - my_network
+    depends_on:
+      - rs01
+      - rs02
+
+networks:
+  my_network:
+    driver: bridge
